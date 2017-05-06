@@ -1,38 +1,32 @@
-# WordPress Docker Container
+# WordPress Docker Container with MariaDB
+
+Complete docker container with Nginx 1.10 & PHP-FPM 7.1 & MariaDB
 
 Lightweight WordPress container with Nginx 1.10 & PHP-FPM 7.1 based on Alpine Linux.
 
 _WordPress version currently installed:_ **4.7.4**
 
-* Used in production for my own sites, making it stable, tested and up-to-date
-* Optimized for 100 concurrent users
-* Optimized to only use resources when there's traffic (by using PHP-FPM's ondemand PM)
-* Best to be used with Amazon Cloudfront as SSL terminator and CDN
-* Built on the lightweight Alpine Linux distribution
-* Small Docker image size (+/-45MB)
-* Uses PHP 7.1 for better performance, lower cpu usage & memory footprint
-* Can safely be updated without loosing data
-* Fully configurable because wp-config.php uses the environment variables you can pass as a argument to the container
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/trafex/wordpress.svg)](https://hub.docker.com/r/trafex/wordpress/) [![](https://images.microbadger.com/badges/image/trafex/wordpress.svg)](https://microbadger.com/images/trafex/wordpress "Get your own image badge on microbadger.com")
 
 ## Create
 
-	docker build docker-wordpress -t wordpress
+	docker build docker-wordpress-mysql -t wordpress
 
 ## Usage
-See docker-compose.yml how to use it in your own environment.
-
-    docker-compose up
-
-Or
-
-    #docker run -d -p 80:80 -v /local/folder:/var/www/wp-content -e "DB_HOST=db" -e "DB_NAME=wordpress" -e "DB_USER=wp" -e "DB_PASSWORD=secret" wordpress
     docker run -d -p 80:80 -v /local/folder:/var/www/wp-content wordpress
+    
+Or without a volume
+    
+    docker run -d -p 80:80 wordpress
+    
+## Database password
+The database password for root and wordpress user are randmly generated on each container generation. For checking it
+    docker logs <container>
 
-### Inspired by
+And find this lines
+    GENERATED ROOT PASSWORD AS 'x7tiZcRi7DhZGc3B2mDy4Qb9rOheQX8Qfubd9ZZr'
+    GENERATED WORDPRESS USER PASSWORD AS 'amOICpa05KYHzaipnaXANxAeg0XgWqHrO4d9ARWD'
 
-* https://hub.docker.com/_/wordpress/
-* https://codeable.io/wordpress-developers-intro-to-docker-part-two/
-* https://github.com/TrafeX/docker-php-nginx/
-* https://github.com/etopian/alpine-php-wordpress
+### Forked from
+* https://github.com/TrafeX/docker-wordpress
