@@ -21,7 +21,6 @@ set -e
     MYSQL_WORDPRESS_USER="wordpress"
     MYSQL_WORDPRESS_USER_PASSWORD=`pwgen -s 40 1`
     MYSQL_WORDPRESS_DATABASE="wordpress"
-    DOMAIN="localhost"
     
     #Create mysql user
     mysql -e "CREATE DATABASE ${MYSQL_WORDPRESS_DATABASE};"
