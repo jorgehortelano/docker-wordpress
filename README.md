@@ -16,6 +16,9 @@ _WordPress version currently installed:_ **4.7.4**
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/trafex/wordpress.svg)](https://hub.docker.com/r/trafex/wordpress/) [![](https://images.microbadger.com/badges/image/trafex/wordpress.svg)](https://microbadger.com/images/trafex/wordpress "Get your own image badge on microbadger.com")
 
+## Create
+
+	docker build docker-wordpress -t wordpress
 
 ## Usage
 See docker-compose.yml how to use it in your own environment.
@@ -24,7 +27,8 @@ See docker-compose.yml how to use it in your own environment.
 
 Or
 
-    docker run -d -p 80:80 -v /local/folder:/var/www/wp-content -e "DB_HOST=db" -e "DB_NAME=wordpress" -e "DB_USER=wp" -e "DB_PASSWORD=secret" trafex/wordpress
+    #docker run -d -p 80:80 -v /local/folder:/var/www/wp-content -e "DB_HOST=db" -e "DB_NAME=wordpress" -e "DB_USER=wp" -e "DB_PASSWORD=secret" wordpress
+    docker run -d -p 80:80 -v /local/folder:/var/www/wp-content wordpress
 
 ### Inspired by
 

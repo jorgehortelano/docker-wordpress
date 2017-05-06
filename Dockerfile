@@ -1,4 +1,4 @@
-FROM alpine:3.5
+FROM alpine:latest
 LABEL Maintainer="Tim de Pater <code@trafex.nl>" \
       Description="Lightweight WordPress container with Nginx 1.10 & PHP-FPM 7.1 based on Alpine Linux."
 
@@ -7,10 +7,10 @@ RUN apk --no-cache add php7 php7-fpm php7-mysqli php7-json php7-openssl php7-cur
     php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype \
     php7-mbstring php7-gd nginx \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ 
 
 # Install packages from stable repo's
-RUN apk --no-cache add supervisor curl bash
+RUN apk --no-cache add --update supervisor curl bash pwgen mysql mysql-client
 
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
@@ -27,29 +27,34 @@ VOLUME /var/www/wp-content
 WORKDIR /var/www/wp-content
 RUN chown -R nobody.nobody /var/www
 
+#MySQL
+RUN /usr/bin/mysql_install_db --user=mysql \
+    && cp /usr/share/mysql/mysql.server /etc/init.d/mysqld
+
 # Wordpress
 ENV WORDPRESS_VERSION 4.7.4
 ENV WORDPRESS_SHA1 153592ccbb838cafa1220de9174ec965df2e9e1a
 
-RUN mkdir -p /usr/src
-
 # Upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
-RUN curl -o wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz \
+RUN mkdir -p /usr/src \
+        && curl -o wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz \
 	&& echo "$WORDPRESS_SHA1 *wordpress.tar.gz" | sha1sum -c - \
 	&& tar -xzf wordpress.tar.gz -C /usr/src/ \
 	&& rm wordpress.tar.gz \
 	&& chown -R nobody.nobody /usr/src/wordpress
 
 # WP config
-COPY wp-config.php /usr/src/wordpress
+COPY config/wp-config.php /usr/src/wordpress
 RUN chown nobody.nobody /usr/src/wordpress/wp-config.php && chmod 640 /usr/src/wordpress/wp-config.php
 
 # Append WP secrets
-COPY wp-secrets.php /usr/src/wordpress
+COPY config/wp-secrets.php /usr/src/wordpress
 RUN chown nobody.nobody /usr/src/wordpress/wp-secrets.php && chmod 640 /usr/src/wordpress/wp-secrets.php
 
 # Entrypoint to copy wp-content
 COPY entrypoint.sh /entrypoint.sh
+    
+
 ENTRYPOINT [ "/entrypoint.sh" ]
 
 EXPOSE 80
