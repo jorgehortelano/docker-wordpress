@@ -9,11 +9,11 @@ _WordPress version currently installed:_ **4.7.4**
 	docker build docker-wordpress-mysql -t wordpress
 
 ## Usage
-    docker run -d -p 80:80 -v /local/folder:/var/www/wp-content wordpress
+    docker run -d --name wordpress -p 80:80 -v /local/folder:/var/www/wp-content --rm wordpress
     
 Or without a volume
     
-    docker run -d -p 80:80 wordpress
+    docker run -d -p 80:80 --name wordpress --restart always wordpress
     
 ## Database password
 The database password for root and wordpress user are randmly generated on each container generation. For checking it
